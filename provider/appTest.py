@@ -23,9 +23,7 @@ oauth = OAuth2Provider(app)
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(40), unique=True)
-    name = db.Column(db.String(40), unique=False)
-    password = db.Column(db.String(40), unique=False)
+    username = db.Column(db.String(40), unique=True)
 
 
 class Client(db.Model):
@@ -127,7 +125,7 @@ def current_user():
     return None
 
 
-@app.route('/home', methods=('GET', 'POST'))
+@app.route('/', methods=('GET', 'POST'))
 def home():
     if request.method == 'POST':
         username = request.form.get('username')
@@ -140,22 +138,6 @@ def home():
         return redirect('/')
     user = current_user()
     return render_template('home.html', user=user)
-
-@app.route('/register', methods=('GET', 'POST'))
-def register():
-    if request.method == 'POST':
-        email = request.form.get('email')
-        password = request.form.get('password')
-        name = request.form.get('name')
-        user = User.query.filter_by(email=email).first()
-        if not user:
-            user = User(email=email, password=password, name=name)
-            db.session.add(user)
-            db.session.commit()
-        session['id'] = user.id
-        return redirect('/')
-    user = current_user()
-    return render_template('register.html', user=user)
 
 
 @app.route('/client')
