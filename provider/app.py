@@ -157,8 +157,10 @@ def register():
             user = User(email=email, password=password, name=name)
             db.session.add(user)
             db.session.commit()
-        session['id'] = user.id
-        return redirect('/')
+            return redirect('/')
+        ##session['id'] = user.id
+        else:
+            return render_template('register.html', error='Email address already in use')
     user = current_user()
     return render_template('register.html', user=user)
 
