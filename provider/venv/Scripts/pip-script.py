@@ -1,4 +1,4 @@
-#!C:\work\hack24\venv\Scripts\python.exe
+#!C:\work\hack24\provider\venv\Scripts\python.exe
 # EASY-INSTALL-ENTRY-SCRIPT: 'pip==1.3.1','console_scripts','pip'
 __requires__ = 'pip==1.3.1'
 import sys

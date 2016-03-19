@@ -1,4 +1,4 @@
-#!C:\work\hack24\venv\Scripts\python.exe
+#!C:\work\hack24\provider\venv\Scripts\python.exe
 # EASY-INSTALL-ENTRY-SCRIPT: 'setuptools==0.6c11','console_scripts','easy_install'
 __requires__ = 'setuptools==0.6c11'
 import sys
