@@ -1,0 +1,11 @@
+{%if error %}
+<p>{{ error }}</p>
+{%endif%}
+<form action="{{ url_for('login') }}" method="post">
+  <input type='text' name='email' placeholder='Email...'/>
+  <input type='password' name='password' placeholder='Password...' />
+  <input type='submit'/>
+</form>
+{% for u in users %}
+  <p>{{ u.email }} -- {{ u.password }}</p>
+{% endfor %}

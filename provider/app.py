@@ -127,19 +127,24 @@ def current_user():
     return None
 
 
-@app.route('/home', methods=('GET', 'POST'))
+@app.route('/', methods=('GET', 'POST'))
 def home():
     if request.method == 'POST':
-        username = request.form.get('username')
-        user = User.query.filter_by(username=username).first()
+        email = request.form.get('email')
+        user = User.query.filter_by(email=email).first()
         if not user:
-            user = User(username=username)
+            user = User(email=email)
             db.session.add(user)
             db.session.commit()
         session['id'] = user.id
         return redirect('/')
     user = current_user()
     return render_template('home.html', user=user)
+
+@app.route('/logout')
+def logout():
+    session.clear();
+    return redirect('/')
 
 @app.route('/register', methods=('GET', 'POST'))
 def register():
@@ -157,6 +162,22 @@ def register():
     user = current_user()
     return render_template('register.html', user=user)
 
+@app.route('/login', methods=('GET', 'POST'))
+def login():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        user = User.query.filter_by(email=email).first()
+        if user:
+            if password == user.password:
+                session['id'] = user.id
+                return redirect('/')
+            else:
+                return render_template('login.html', error='Email or password incorrect')
+        else:
+            return render_template('login.html', error='Email or password incorrect')
+    else:
+        return render_template('login.html')
 
 @app.route('/client')
 def client():
