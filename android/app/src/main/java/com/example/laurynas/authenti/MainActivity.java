@@ -10,10 +10,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+
+import org.json.JSONObject;
+
+import cz.msebera.android.httpclient.Header;
+
+
 public class MainActivity extends AppCompatActivity {
 
-    public final static String EXTRA_MESSAGE = "com.auth.app.MESSAGE";
-    public final static String EXTRA_PASS = "com.auth.app.MESSAGE";
+    public final static String EXTRA_MESSAGE = "com.authenti.intservice.extra.USER";
+    public final static String EXTRA_PASS = "com.authenti.intservice.extra.PASS";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,14 +31,14 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
+        //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        //        fab.setOnClickListener(new View.OnClickListener() {
+        //            @Override
+        //            public void onClick(View view) {
+        //                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+        //                        .setAction("Action", null).show();
+        //            }
+        //        });
     }
 
     @Override
@@ -54,17 +63,78 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void sendMessage(View view) {
-        Intent intent = new Intent(this, DisplayMessageActivity.class);
+    public void postMessage() {
         EditText editText = (EditText) findViewById(R.id.Text1);
-        String message = editText.getText().toString();
-        intent.putExtra(EXTRA_MESSAGE, message);
+        String email = editText.getText().toString();
         EditText pass = (EditText) findViewById(R.id.editText);
-        String mess = pass.getText().toString();
-        Log.d("Messages", pass + message);
-        startActivity(intent);
+        String password = pass.getText().toString();
+        if (email.equals("") || password.equals("")) {
+            return;
+        }
+        RequestParams params = new RequestParams();
+
+        // set our JSON object
+
+        params.put("email", email);
+        params.put("password", password);
+//            params.setForceMultipartEntityContentType(true);
+
+
+        AsyncHttpClient client = new AsyncHttpClient();
+
+        final Intent tent = new Intent(this, SendDetails.class);
+
+
+        client.post("https://noauth.herokuapp.com/api/login", params, new JsonHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                try {
+
+
+                    String username = response.getString("email");
+                    String name = response.getString("name");
+
+
+                    tent.putExtra(EXTRA_MESSAGE, username);
+                    tent.putExtra(EXTRA_PASS, name);
+
+
+                    //  Log.d("Response: ", username+name);
+                    startService(tent);
+                } catch (Exception e) {
+
+                }
+            }
+
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+                Log.e("fail: ", errorResponse.toString());
+            }
+        });
+    }
+
+    public void sendMessage(View view) {
+        //  Intent intent = new Intent(this, DisplayMessageActivity.class);
+        // Intent tent = new Intent(this, SendDetails.class);
+        //   tent.setAction("com.example.laurynas.authenti.action.FOO");
+
+        //  tent.putExtra(EXTRA_MESSAGE, email);
+
+        //   tent.putExtra(EXTRA_PASS, password);
+        //  startService(tent);
+        //        startActivity(intent);
+        postMessage();
 
     }
 
-
+    // MyResponseHandler h = new MyResponseHandler();
+    //class MyResponseHandler extends
 }
