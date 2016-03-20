@@ -1,12 +1,21 @@
 {%if error %}
 <p>{{ error }}</p>
 {%endif%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
 <a href="{{ url_for('home') }}">Home</a>
 <form action="{{ url_for('login') }}" method="post">
-  <input type='text' name='email' placeholder='Email...'/>
-  <input type='password' name='password' placeholder='Password...' />
-  <input type='submit'/>
+    <input type='text' name='email' placeholder='Email...' />
+    <input type='password' name='password' placeholder='Password...' />
+    <input type='submit' />
 </form>
 {% for u in users %}
-  <p>{{ u.email }} -- {{ u.password }}</p>
+<p>{{ u.email }} -- {{ u.password }}</p>
 {% endfor %}
+</body>
+</html>
