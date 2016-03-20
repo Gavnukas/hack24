@@ -1,0 +1,30 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <!-- Latest compiled JavaScript -->
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body style="margin-left: 10px; margin-right:10px; background-color: #3498db; color: white;">
+    <h1 style="float:left;">Welcome</h1>
+    {% if session %}
+        <div class="btn-group" role="group" aria-label="..." style="margin-top: 20px; float: right;">
+            <!--<a href="http://127.0.0.1:5000/logout" type="button" class="btn btn-default" >Log out</a>-->
+            <button type="button" name="log out" value="logout">Log out</button>
+        </div>
+        <p>You are logged in as {{ session.email }}</p>
+    {% else %}
+        <div class="btn-group" role="group" aria-label="..." style="margin-top: 20px; float: right;">
+            <a href="http://127.0.0.1:5000/login" type="button" class="btn btn-default">Login with noAuthy</a>
+            <a href="http://127.0.0.1:5000/register" type="button" class="btn btn-default">Register with noAuthy</a>
+        </div>
+        <div style="width:100%; height:10px;"></div>
+        <p style="display: inline-block; margin-top: 60px; margin-left: -150px; font-size:large;">Please login to the website</p>
+    {% endif %}
+</body>
+</html>

@@ -1,4 +1,4 @@
-{%if error %}
+﻿{%if error %}
 <p>{{ error }}</p>
 {%endif%}
 <!DOCTYPE html>
@@ -8,7 +8,7 @@
     <title></title>
 </head>
 <body>
-<a href="{{ url_for('home') }}">Home</a>
+<a href="{{ url_for('home') }}">noAuthy Home</a>
 <form action="{{ url_for('register') }}" method="post">
     <input type='text' name='name' placeholder='Name...' required />
     <input type='text' name='email' placeholder='Email...' required />
