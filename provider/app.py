@@ -173,7 +173,7 @@ def login():
         if user:
             if password == user.password:
                 session['id'] = user.id
-                return redirect('/')
+                return redirect('http://localhost:8000/home')
             else:
                 return render_template('login.html', error='Email or password incorrect')
         else:

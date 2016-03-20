@@ -1,4 +1,4 @@
-from flask import Flask, url_for, session, request, jsonify
+from flask import Flask, url_for, session, request, jsonify, render_template
 from flask_oauthlib.client import OAuth
 
 
@@ -46,6 +46,27 @@ def authorized():
     session['remote_oauth'] = (resp['access_token'], '')
     return jsonify(oauth_token=resp['access_token'])
 
+@app.route('/home', methods=('GET', 'POST'))
+def home():
+    if request.method == 'POST':
+        if request.form('button') == 'logout':
+            logout();
+##    if 'remote_oauth' in session:
+##        resp = remote.get('me')
+##        return jsonify(resp.data)
+##    next_url = request.args.get('next') or request.referrer or None
+##    return remote.authorize(
+##        callback=url_for('authorized', next=next_url, _external=True)
+##    ) and render_template('home.html')
+    if 'remote_oauth' in session:
+        resp = remote.get('me')
+        return jsonify(resp.data)
+    return render_template('home.html')
+
+def logout():
+    session.clear();
+    home(); 
+    ##return render_template('home.html')
 
 @remote.tokengetter
 def get_oauth_token():
