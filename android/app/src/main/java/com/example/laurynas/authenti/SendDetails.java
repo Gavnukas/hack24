@@ -71,7 +71,7 @@ public class SendDetails extends IntentService {
      */
     private void handleActionFoo(String param1, String param2) {
         // TODO: Handle action Foo
-        HttpAuthorizer authorizer = new HttpAuthorizer("");
+        HttpAuthorizer authorizer = new HttpAuthorizer("https://noauth.herokuapp.com/pusher/auth");
 
 
         PusherOptions options = new PusherOptions();
@@ -84,15 +84,15 @@ public class SendDetails extends IntentService {
         pusher = new Pusher(key, options);
 
 
-        PrivateChannel channel = pusher.subscribePrivate("Client-NoAuth");
+        PrivateChannel channel = pusher.subscribePrivate("private-app-" + param1);
         channel.bind("private-authenticate", new PrivateChannelEventListener() {
             @Override
-            public void onAuthenticationFailure(String s, Exception e) {
-
+            public void onAuthenticationFailure(String channelName, Exception e) {
+                Log.d("Exception: Failed to authenticate on - ", channelName + " " + e.toString());
             }
 
             @Override
-            public void onSubscriptionSucceeded(String s) {
+            public void onSubscriptionSucceeded(String channelName) {
 
             }
 

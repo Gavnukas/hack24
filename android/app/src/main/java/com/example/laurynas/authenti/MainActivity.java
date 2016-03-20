@@ -1,6 +1,8 @@
 package com.example.laurynas.authenti;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -23,11 +25,12 @@ public class MainActivity extends AppCompatActivity {
 
     public final static String EXTRA_MESSAGE = "com.authenti.intservice.extra.USER";
     public final static String EXTRA_PASS = "com.authenti.intservice.extra.PASS";
-
+    private String token = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -63,11 +66,8 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void postMessage() {
-        EditText editText = (EditText) findViewById(R.id.Text1);
-        String email = editText.getText().toString();
-        EditText pass = (EditText) findViewById(R.id.editText);
-        String password = pass.getText().toString();
+    public void postMessage(String email, String password) {
+
         if (email.equals("") || password.equals("")) {
             return;
         }
@@ -86,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         client.post("https://noauth.herokuapp.com/api/login", params, new JsonHttpResponseHandler() {
+
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 super.onFailure(statusCode, headers, responseString, throwable);
@@ -100,13 +101,24 @@ public class MainActivity extends AppCompatActivity {
                     String username = response.getString("email");
                     String name = response.getString("name");
 
+                    if (getToken().equals(" ")) {
+                        String token = response.getString("token");
+                        int mode = Activity.MODE_PRIVATE;
+                        SharedPreferences mySharedPreferences;
+                        mySharedPreferences = getSharedPreferences("NoAuth", mode);
+                        SharedPreferences.Editor editor = mySharedPreferences.edit();
+                        editor.putString("Token", token);
+                        editor.commit();
+                    } else {
+                        token = getToken();
+                    }
 
                     tent.putExtra(EXTRA_MESSAGE, username);
                     tent.putExtra(EXTRA_PASS, name);
 
-
                     //  Log.d("Response: ", username+name);
-                    startService(tent);
+                    //  startService(tent);
+
                 } catch (Exception e) {
 
                 }
@@ -122,19 +134,41 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void sendMessage(View view) {
-        //  Intent intent = new Intent(this, DisplayMessageActivity.class);
-        // Intent tent = new Intent(this, SendDetails.class);
-        //   tent.setAction("com.example.laurynas.authenti.action.FOO");
+        EditText editText = (EditText) findViewById(R.id.Text1);
+        String email = editText.getText().toString();
+        EditText pass = (EditText) findViewById(R.id.editText);
+        String password = pass.getText().toString();
+        postMessage(email, password);
 
-        //  tent.putExtra(EXTRA_MESSAGE, email);
 
-        //   tent.putExtra(EXTRA_PASS, password);
-        //  startService(tent);
-        //        startActivity(intent);
-        postMessage();
+
 
     }
 
+    public String getToken() {
+        int mode = Activity.MODE_PRIVATE;
+
+        SharedPreferences mySharedPreferences;
+        mySharedPreferences = getSharedPreferences("NoAuth", mode);
+
+
+        String mString;
+
+        mString = mySharedPreferences.getString("Token", " ");
+
+        return mString;
+    }
     // MyResponseHandler h = new MyResponseHandler();
     //class MyResponseHandler extends
 }
+
+
+//  Intent intent = new Intent(this, DisplayMessageActivity.class);
+// Intent tent = new Intent(this, SendDetails.class);
+//   tent.setAction("com.example.laurynas.authenti.action.FOO");
+
+//  tent.putExtra(EXTRA_MESSAGE, email);
+
+//   tent.putExtra(EXTRA_PASS, password);
+//  startService(tent);
+//        startActivity(intent);
